@@ -22,12 +22,12 @@
 #
 # Given a request, this server responds in a 7 byte code as follows:
 #   puzzle_code status
-# Where puzzle_code is the puzzle passed in and status is DNE for done or INC for not done
+# Where puzzle_code is the puzzle passed in and status is DNE for done or RST for not done
 #   BKS DNE: Means books puzzle is done
 #
 # Note this means DNE commands should always return the puzzle name then DNE
-# and RST commands always return puzzle name then INC
-# GET commands will return the status, either DNE (done) or INC (incomplete)
+# and RST commands always return puzzle name then RST
+# GET commands will return the status, either DNE (done) or RST (incomplete)
 #
 # Invalid commands are responded to with INVALID
 
