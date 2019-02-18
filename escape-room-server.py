@@ -32,27 +32,39 @@
 # Invalid commands are responded to with INVALID
 
 import socket
+from Adafruit_IO import Client
+
+aio = Client('gnr7aj', 'cfe1066499504669bd9e2afc759bc199')
 
 PUZZLE_FEEDS = {
-    "MRS": "morse_feed",
-    "TIM": "time_feed",
-    "BKS": "books_feed",
-    "GRS": "gears_feed"
+    "MRS": "morse",
+    "TIM": "time-machine",
+    "BKS": "books",
+    "GRS": "gears"
 }
 
 # TODO: Set puzzle status on Adafruit IO to done
 def puzzle_done(puzzle):
     print("done", puzzle)
+    current = aio.receive(PUZZLE_FEEDS[puzzle])
+    current = current.value.split()
+    hint_num = current[0]
+    aio.send(PUZZLE_FEEDS[puzzle], str(hint_num) + " DNE")
     return puzzle + " DNE"
 
 # TODO: Get puzzle status from Adafruit IO
 def puzzle_get(puzzle):
     print("get", puzzle)
-    return puzzle + " DNE"
+    data = aio.receive(PUZZLE_FEEDS[puzzle])
+    data = data.value.split()
+    if data[1] == "DNE":
+        return puzzle + " DNE"
+    return puzzle + " RST" 
 
 # TODO: Set puzzle status on Adafruit IO to incomplete
 def puzzle_reset(puzzle):
     print("reset", puzzle)
+    aio.send(PUZZLE_FEEDS[puzzle], "0 RST")
     return puzzle + " RST"
 
 PORT = 1337
@@ -65,7 +77,7 @@ COMMAND_FUNCTIONS = {
 
 # Setup socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind(("0.0.0.0", PORT))
+s.bind(("localhost", PORT))
 
 while True:
     s.listen(1)
