@@ -43,29 +43,31 @@ PUZZLE_FEEDS = {
     "GRS": "gears"
 }
 
-# TODO: Set puzzle status on Adafruit IO to done
+
 def puzzle_done(puzzle):
     print("done", puzzle)
-    current = aio.receive(PUZZLE_FEEDS[puzzle])
-    current = current.value.split()
-    hint_num = current[0]
-    aio.send(PUZZLE_FEEDS[puzzle], str(hint_num) + " DNE")
+    data = aio.receive(PUZZLE_FEEDS[puzzle])
+    data = data.value.split()
+    aio.send(PUZZLE_FEEDS[puzzle], str(data[0]) + " DNE")
     return puzzle + " DNE"
 
-# TODO: Get puzzle status from Adafruit IO
+
 def puzzle_get(puzzle):
     print("get", puzzle)
     data = aio.receive(PUZZLE_FEEDS[puzzle])
     data = data.value.split()
     if data[1] == "DNE":
         return puzzle + " DNE"
-    return puzzle + " RST" 
+    return puzzle + " RST"
 
-# TODO: Set puzzle status on Adafruit IO to incomplete
+
 def puzzle_reset(puzzle):
     print("reset", puzzle)
-    aio.send(PUZZLE_FEEDS[puzzle], "0 RST")
+    data = aio.receive(PUZZLE_FEEDS[puzzle])
+    data = data.value.split()
+    aio.send(PUZZLE_FEEDS[puzzle], str(data[0]) + " RST")
     return puzzle + " RST"
+
 
 PORT = 1337
 
