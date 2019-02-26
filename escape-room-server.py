@@ -32,15 +32,12 @@
 # Invalid commands are responded to with INVALID
 
 import socket
-from Adafruit_IO import Client
-
-aio = Client('gnr7aj', 'cfe1066499504669bd9e2afc759bc199')
 
 PUZZLE_FEEDS = {
-    "MRS": "morse",
-    "TIM": "time-machine",
-    "BKS": "books",
-    "GRS": "gears"
+    "MRS": "morse_feed",
+    "TIM": "time_feed",
+    "BKS": "books_feed",
+    "GRS": "gears_feed"
 }
 
 
@@ -79,7 +76,7 @@ COMMAND_FUNCTIONS = {
 
 # Setup socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind(("localhost", PORT))
+s.bind(("0.0.0.0", PORT))
 
 while True:
     s.listen(1)

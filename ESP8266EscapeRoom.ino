@@ -18,15 +18,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+//#include "ESP8266EscapeRoom.h"
 #include "ESP8266.h"
 #include <SoftwareSerial.h>
 
+
 #define SSID        "wahoo"
 #define PASSWORD    ""
-#define HOST_NAME   "172.27.108.103"
-#define HOST_PORT   (1337)
 
-SoftwareSerial esp(7, 6);
+SoftwareSerial esp(7,6);
 ESP8266 wifi(esp);
 
 void setup(void)
@@ -42,14 +42,15 @@ void setup(void)
     } else {
         Serial.print("to station + softap err\r\n");
     }
- 
-    if (wifi.joinAP(SSID, PASSWORD)) {
+    Serial.println("Connecting to WiFi");
+    while (!wifi.joinAP(SSID, PASSWORD)) Serial.println("Retrying...");
+    /*if (wifi.joinAP(SSID, PASSWORD)) {
         Serial.print("Join AP success\r\n");
         Serial.print("IP:");
         Serial.println( wifi.getLocalIP().c_str());       
     } else {
         Serial.print("Join AP failure\r\n");
-    }
+    }*/
     
     if (wifi.disableMUX()) {
         Serial.print("single ok\r\n");
@@ -62,32 +63,19 @@ void setup(void)
  
 void loop(void)
 {
-    uint8_t buffer[7] = {0};
-    
-    if (wifi.createTCP(HOST_NAME, HOST_PORT)) {
-        Serial.print("create tcp ok\r\n");
-    } else {
-        Serial.print("create tcp err\r\n");
-    }
-    
-    char *hello = "BKS DNE";
-    wifi.send((const uint8_t*)hello, strlen(hello));
-    
-    uint32_t len = wifi.recv(buffer, sizeof(buffer), 10000);
-    Serial.println(len);
-    if (len > 0) {
-        Serial.print("Received:[");
-        for(uint32_t i = 0; i < len; i++) {
-            Serial.print((char)buffer[i]);
-        }
-        Serial.print("]\r\n");
-    }
-    
-    if (wifi.releaseTCP()) {
-        Serial.print("release tcp ok\r\n");
-    } else {
-        Serial.print("release tcp err\r\n");
-    }
+    // Replace BKS with the puzzle you want
+    // BKS = Books
+    // MRS = Morse code
+    // TIM = Time machine
+    // GRS = Gears
+    Serial.println("Mark books done:");
+    Serial.println(wifi.markPuzzleDone("BKS"));
+    Serial.println("Books status:");
+    Serial.println(wifi.getPuzzleStatus("BKS"));
+    Serial.println("Mark books incomplete:");
+    Serial.println(wifi.markPuzzleIncomplete("BKS"));
+    Serial.println("Books status:");
+    Serial.println(wifi.getPuzzleStatus("BKS"));
     delay(5000);
 }
      
