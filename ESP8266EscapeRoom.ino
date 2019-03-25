@@ -48,6 +48,9 @@ void loop(void)
     // MRS = Morse code
     // TIM = Time machine
     // GRS = Gears
+
+    // Books
+    Serial.println();
     Serial.print("Mark books done: ");
     Serial.println(wifi.markPuzzleDone("BKS"));
     delay(50);
@@ -59,9 +62,70 @@ void loop(void)
     delay(50);
     Serial.print("Books status: ");
     Serial.println(wifi.getPuzzleStatus("BKS"));
-    delay(5000);
+    delay(1000);
+
+    // Morse code
+    Serial.println();
+    Serial.print("Mark morse done: ");
+    Serial.println(wifi.markPuzzleDone("MRS"));
+    delay(50);
+    Serial.print("Morse status: ");
+    Serial.println(wifi.getPuzzleStatus("MRS"));
+    delay(50);
+    Serial.print("Mark morse incomplete: ");
+    Serial.println(wifi.markPuzzleIncomplete("MRS"));
+    delay(50);
+    Serial.print("Morse status: ");
+    Serial.println(wifi.getPuzzleStatus("MRS"));
+    delay(1000);
+
+    // Time machine
+    Serial.println();
+    Serial.print("Mark time machine done: ");
+    Serial.println(wifi.markPuzzleDone("TIM"));
+    delay(50);
+    Serial.print("Time machine status: ");
+    Serial.println(wifi.getPuzzleStatus("TIM"));
+    delay(50);
+    Serial.print("Mark time machine incomplete: ");
+    Serial.println(wifi.markPuzzleIncomplete("TIM"));
+    delay(50);
+    Serial.print("Time machine status: ");
+    Serial.println(wifi.getPuzzleStatus("TIM"));
+    delay(1000);
+
+    // Gears
+    Serial.println();
+    Serial.print("Mark gears done: ");
+    Serial.println(wifi.markPuzzleDone("GRS"));
+    delay(50);
+    Serial.print("Gears status: ");
+    Serial.println(wifi.getPuzzleStatus("GRS"));
+    delay(50);
+    Serial.print("Mark gears incomplete: ");
+    Serial.println(wifi.markPuzzleIncomplete("GRS"));
+    delay(50);
+    Serial.print("Gears status: ");
+    Serial.println(wifi.getPuzzleStatus("GRS"));
+    delay(1000);
+
+    // Mark all done
+    Serial.println();
+    Serial.print("Mark books done: ");
+    Serial.println(wifi.markPuzzleDone("BKS"));
+    delay(50);
+    Serial.print("Mark morse code done: ");
+    Serial.println(wifi.markPuzzleDone("MRS"));
+    delay(50);
+    Serial.print("Mark time machine done: ");
+    Serial.println(wifi.markPuzzleDone("TIM"));
+    delay(50);
+    Serial.print("Mark gears done: ");
+    Serial.println(wifi.markPuzzleDone("GRS"));
+    delay(1000);
 
     // Reset all puzzles
+    Serial.println();
     Serial.print("Resetting all: ");
     Serial.println(wifi.resetAllPuzzles());
     delay(50);
@@ -77,6 +141,6 @@ void loop(void)
     delay(50);
     Serial.print("Gears status: ");
     Serial.println(wifi.getPuzzleStatus("GRS"));
-    delay(5000);
+    delay(1000);
 }
      
