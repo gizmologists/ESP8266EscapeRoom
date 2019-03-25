@@ -807,6 +807,20 @@ bool ESP8266::markPuzzleIncomplete(char *puzzle) {
     return true;
 }
 
+bool ESP8266::resetAllPuzzles() {
+    char *request = "ALL RST";
+    char resp[8] = {0};
+    int i=0;
+    for (; i<3; i++) {
+      if (sendRequest(request, resp)) {
+        if (resp[0] != '\0' && strcmp(resp, "INVALID")) break;
+      }
+    }
+    // Return false if we send 3 requests with invalid responses
+    if (i == 3) return false;
+    return true;
+}
+
 bool ESP8266::sendRequest(char *request, char *resp) {
     if (!createTCP(HOST_NAME, HOST_PORT)) {
       releaseTCP();

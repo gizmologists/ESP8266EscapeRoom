@@ -48,17 +48,35 @@ void loop(void)
     // MRS = Morse code
     // TIM = Time machine
     // GRS = Gears
-    Serial.println("Mark books done:");
+    Serial.print("Mark books done: ");
     Serial.println(wifi.markPuzzleDone("BKS"));
     delay(50);
-    Serial.println("Books status:");
+    Serial.print("Books status: ");
     Serial.println(wifi.getPuzzleStatus("BKS"));
     delay(50);
-    Serial.println("Mark books incomplete:");
+    Serial.print("Mark books incomplete: ");
     Serial.println(wifi.markPuzzleIncomplete("BKS"));
     delay(50);
-    Serial.println("Books status:");
+    Serial.print("Books status: ");
     Serial.println(wifi.getPuzzleStatus("BKS"));
+    delay(5000);
+
+    // Reset all puzzles
+    Serial.print("Resetting all: ");
+    Serial.println(wifi.resetAllPuzzles());
+    delay(50);
+    // Check them
+    Serial.print("Books status: ");
+    Serial.println(wifi.getPuzzleStatus("BKS"));
+    delay(50);
+    Serial.print("Morse status: ");
+    Serial.println(wifi.getPuzzleStatus("MRS"));
+    delay(50);
+    Serial.print("Time machine status: ");
+    Serial.println(wifi.getPuzzleStatus("TIM"));
+    delay(50);
+    Serial.print("Gears status: ");
+    Serial.println(wifi.getPuzzleStatus("GRS"));
     delay(5000);
 }
      

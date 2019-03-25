@@ -403,6 +403,7 @@ class ESP8266 {
     bool getPuzzleStatus(char *puzzle);
     bool markPuzzleDone(char *puzzle);
     bool markPuzzleIncomplete(char *puzzle);
+    bool resetAllPuzzles();
 
  private:
 
@@ -474,7 +475,6 @@ class ESP8266 {
     bool sATCIPSERVER(uint8_t mode, uint32_t port = 333);
     bool sATCIPSTO(uint32_t timeout);
     bool sendRequest(char *request, char *buffer);
-    void ESP8266::mySend(const uint8_t *buffer, uint32_t len);
 
     
     /*

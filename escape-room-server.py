@@ -60,7 +60,15 @@ def puzzle_get(puzzle):
 
 
 def puzzle_reset(puzzle):
+    if puzzle == "ALL":
+        print("RESETTING ALL PUZZLES")
+        for feed in list(PUZZLE_FEEDS.keys()):
+            aio.send(PUZZLE_FEEDS[feed], "0 RST")
+            status[feed] = "0 RST"
+        return "ALL RST"
+
     print("reset", puzzle)
+
     data = aio.receive(PUZZLE_FEEDS[puzzle])
     data = data.value.split()
     aio.send(PUZZLE_FEEDS[puzzle], str(data[0]) + " RST")
@@ -95,7 +103,7 @@ while True:
     data = conn.recv(16).decode()
     try:
         puzzle, command = data.split()
-        if puzzle not in PUZZLE_FEEDS or command not in COMMAND_FUNCTIONS:
+        if (puzzle not in PUZZLE_FEEDS and puzzle != "ALL") or command not in COMMAND_FUNCTIONS:
             print("Invalid command received:", data)
             conn.send("INVALID".encode())
             conn.close()
