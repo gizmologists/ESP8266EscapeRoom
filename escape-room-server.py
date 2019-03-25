@@ -49,7 +49,10 @@ def puzzle_done(puzzle):
     print("done", puzzle)
     data = aio.receive(PUZZLE_FEEDS[puzzle])
     data = data.value.split()
-    aio.send(PUZZLE_FEEDS[puzzle], str(data[0]) + " DNE")
+    try:
+        aio.send(PUZZLE_FEEDS[puzzle], str(data[0]) + " DNE")
+    except:
+        return
     status[puzzle] = "DNE"
     return puzzle + " DNE"
 
@@ -63,7 +66,10 @@ def puzzle_reset(puzzle):
     if puzzle == "ALL":
         print("RESETTING ALL PUZZLES")
         for feed in list(PUZZLE_FEEDS.keys()):
-            aio.send(PUZZLE_FEEDS[feed], "0 RST")
+            try:
+                aio.send(PUZZLE_FEEDS[feed], "0 RST")
+            except:
+                return
             status[feed] = "0 RST"
         return "ALL RST"
 
@@ -71,7 +77,10 @@ def puzzle_reset(puzzle):
 
     data = aio.receive(PUZZLE_FEEDS[puzzle])
     data = data.value.split()
-    aio.send(PUZZLE_FEEDS[puzzle], str(data[0]) + " RST")
+    try:
+        aio.send(PUZZLE_FEEDS[puzzle], str(data[0]) + " RST")
+    except:
+        return
     status[puzzle] = "RST"
     return puzzle + " RST"
 
