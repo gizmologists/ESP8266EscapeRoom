@@ -49,7 +49,7 @@ ESP8266::ESP8266(SoftwareSerial &uart, uint32_t baud): m_puart(&uart)
 }
 ESP8266::ESP8266(uint32_t baud)
 {
-    SoftwareSerial *s = new SoftwareSerial(7, 6);
+    SoftwareSerial *s = new SoftwareSerial(TX_PIN, RX_PIN);
     m_puart = s;
     m_puart->begin(baud);
     rx_empty();
@@ -701,7 +701,8 @@ bool ESP8266::eATCIPCLOSESingle(void)
 {
     rx_empty();
     m_puart->println("AT+CIPCLOSE");
-    return recvFind("OK", 5000);
+    //return recvFind("OK", 5000);
+    return true;
 }
 bool ESP8266::eATCIFSR(String &list)
 {
@@ -753,54 +754,67 @@ bool ESP8266::sATCIPSTO(uint32_t timeout)
 bool ESP8266::getPuzzleStatus(char *puzzle) {
     char request[8];
     strcpy(request, puzzle);
-    strcat(request, " GET");
-    request[8] = '\0';
-    char resp[8];
+    strcat(request, " GET\0");
+    //request[8] = '\0';
+    char resp[8] = {0};
     int i=0;
-    for (; i<3; i++) if (sendRequest(request, resp)) break;
+    //for (; i<3; i++) if (sendRequest(request, resp)) break;
+    for (; i<3; i++) {
+      if (sendRequest(request, resp)) {
+        if (resp[0] != '\0' && strcmp(resp, "INVALID")) break;
+      }
+    }
     // Return false if we send 3 requests with invalid responses
     if (i == 3) return false;
     char doneResp[8];
     strcpy(doneResp, puzzle);
-    strcat(request, " DNE");
+    strcat(doneResp, " DNE");
     doneResp[7] = '\0';
-    if (strcmp(resp, doneResp)) return true;
+    if (!strcmp(resp, doneResp)) return true;
     else return false;
 }
 
 bool ESP8266::markPuzzleDone(char *puzzle) {
     char request[8];
     strcpy(request, puzzle);
-    strcat(request, " DNE");
-    request[8] = '\0';
-    char resp[8];
+    strcat(request, " DNE\0");
+    char resp[8] = {0};
     int i=0;
-    for (; i<3; i++) if (sendRequest(request, resp)) break;
+    //for (; i<3; i++) if (sendRequest(request, resp)) break;
+    for (; i<3; i++) {
+      if (sendRequest(request, resp)) {
+        if (resp[0] != '\0' && strcmp(resp, "INVALID")) break;
+      }
+    }
     // Return false if we send 3 requests with invalid responses
     if (i == 3) return false;
-    if (strcmp(resp, "INVALID")) return false;
     return true;
 }
 
 bool ESP8266::markPuzzleIncomplete(char *puzzle) {
     char request[8];
     strcpy(request, puzzle);
-    strcat(request, " RST");
-    request[8] = '\0';
-    char resp[8];
+    strcat(request, " RST\0");
+    char resp[8] = {0};
     int i=0;
-    for (; i<3; i++) if (sendRequest(request, resp)) break;
+    for (; i<3; i++) {
+      if (sendRequest(request, resp)) {
+        if (resp[0] != '\0' && strcmp(resp, "INVALID")) break;
+      }
+    }
     // Return false if we send 3 requests with invalid responses
     if (i == 3) return false;
-    if (strcmp(resp, "INVALID")) return false;
     return true;
 }
 
-bool ESP8266::sendRequest(char *request, char *buffer) {
-    if (!createTCP(HOST_NAME, HOST_PORT)) return false;
+bool ESP8266::sendRequest(char *request, char *resp) {
+    if (!createTCP(HOST_NAME, HOST_PORT)) {
+      releaseTCP();
+      return false;
+    }
     send((const uint8_t*)request, strlen(request));
-    uint32_t len = recv(buffer, sizeof(buffer), 10000);
+    uint32_t len = recv(resp, 8);
+    releaseTCP();
     if (len > 0) return true;
     else return false;
 }
-

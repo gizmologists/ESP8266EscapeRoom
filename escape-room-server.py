@@ -32,30 +32,31 @@
 # Invalid commands are responded to with INVALID
 
 import socket
+from Adafruit_IO import *
+
+aio = Client('ogreatfox', '8341795c01774027901eae1c9f822f2d')
 
 PUZZLE_FEEDS = {
-    "MRS": "morse_feed",
-    "TIM": "time_feed",
-    "BKS": "books_feed",
-    "GRS": "gears_feed"
+    "MRS": "morse-feed",
+    "TIM": "time-feed",
+    "BKS": "books-feed",
+    "GRS": "gears-feed"
 }
 
+status = {}
 
 def puzzle_done(puzzle):
     print("done", puzzle)
     data = aio.receive(PUZZLE_FEEDS[puzzle])
     data = data.value.split()
     aio.send(PUZZLE_FEEDS[puzzle], str(data[0]) + " DNE")
+    status[puzzle] = "DNE"
     return puzzle + " DNE"
 
 
 def puzzle_get(puzzle):
     print("get", puzzle)
-    data = aio.receive(PUZZLE_FEEDS[puzzle])
-    data = data.value.split()
-    if data[1] == "DNE":
-        return puzzle + " DNE"
-    return puzzle + " RST"
+    return puzzle + " " + status[puzzle]
 
 
 def puzzle_reset(puzzle):
@@ -63,6 +64,7 @@ def puzzle_reset(puzzle):
     data = aio.receive(PUZZLE_FEEDS[puzzle])
     data = data.value.split()
     aio.send(PUZZLE_FEEDS[puzzle], str(data[0]) + " RST")
+    status[puzzle] = "RST"
     return puzzle + " RST"
 
 
@@ -73,6 +75,12 @@ COMMAND_FUNCTIONS = {
     "GET": puzzle_get,
     "RST": puzzle_reset
 }
+
+for feed in list(PUZZLE_FEEDS.keys()):
+    data = aio.receive(PUZZLE_FEEDS[feed]).value.split()
+    status[feed] = data[1]
+
+print("Puzzle statuses: ", status)
 
 # Setup socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

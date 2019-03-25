@@ -21,7 +21,9 @@
 #ifndef __ESP8266_H__
 #define __ESP8266_H__
 
-#define HOST_NAME   "172.27.109.43"
+#define RX_PIN      6
+#define TX_PIN      7
+#define HOST_NAME   "172.27.109.239"
 #define HOST_PORT   (1337)
 
 #include "Arduino.h"
@@ -46,11 +48,11 @@ class ESP8266 {
      * Constuctor. 
      *
      * @param uart - an reference of SoftwareSerial object. 
-     * @param baud - the buad rate to communicate with ESP8266(default:9600). 
+     * @param  - the buad rate to communicate with ESP8266(default:9600). 
      *
      * @warning parameter baud depends on the AT firmware. 9600 is an common value. 
      */
-    ESP8266(uint32_t baud = 9600);
+    ESP8266(uint32_t baud = 115200);
     ESP8266(SoftwareSerial &uart, uint32_t baud = 9600);
 #else /* HardwareSerial */
     /*
@@ -472,6 +474,8 @@ class ESP8266 {
     bool sATCIPSERVER(uint8_t mode, uint32_t port = 333);
     bool sATCIPSTO(uint32_t timeout);
     bool sendRequest(char *request, char *buffer);
+    void ESP8266::mySend(const uint8_t *buffer, uint32_t len);
+
     
     /*
      * +IPD,len:data
@@ -486,4 +490,3 @@ class ESP8266 {
 };
 
 #endif /* #ifndef __ESP8266_H__ */
-

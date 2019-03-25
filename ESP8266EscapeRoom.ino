@@ -18,14 +18,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-//#include "ESP8266EscapeRoom.h"
 #include "ESP8266.h"
 #include <SoftwareSerial.h>
 
-
+// Connect to wahoo
 #define SSID        "wahoo"
 #define PASSWORD    ""
 
+// Setup ESP
+// Pin 7 is TX on adapter; 6 is RX on adapter
+// Adapter takes 5V in VCC
 SoftwareSerial esp(7,6);
 ESP8266 wifi(esp);
 
@@ -33,31 +35,9 @@ void setup(void)
 {
     Serial.begin(115200);
     Serial.print("setup begin\r\n");
-    
-    Serial.print("FW Version:");
-    Serial.println(wifi.getVersion().c_str());
-      
-    if (wifi.setOprToStationSoftAP()) {
-        Serial.print("to station + softap ok\r\n");
-    } else {
-        Serial.print("to station + softap err\r\n");
-    }
     Serial.println("Connecting to WiFi");
+    // Connect to WiFi and wait till it's connected
     while (!wifi.joinAP(SSID, PASSWORD)) Serial.println("Retrying...");
-    /*if (wifi.joinAP(SSID, PASSWORD)) {
-        Serial.print("Join AP success\r\n");
-        Serial.print("IP:");
-        Serial.println( wifi.getLocalIP().c_str());       
-    } else {
-        Serial.print("Join AP failure\r\n");
-    }*/
-    
-    if (wifi.disableMUX()) {
-        Serial.print("single ok\r\n");
-    } else {
-        Serial.print("single err\r\n");
-    }
-    
     Serial.print("setup end\r\n");
 }
  
@@ -70,10 +50,13 @@ void loop(void)
     // GRS = Gears
     Serial.println("Mark books done:");
     Serial.println(wifi.markPuzzleDone("BKS"));
+    delay(50);
     Serial.println("Books status:");
     Serial.println(wifi.getPuzzleStatus("BKS"));
+    delay(50);
     Serial.println("Mark books incomplete:");
     Serial.println(wifi.markPuzzleIncomplete("BKS"));
+    delay(50);
     Serial.println("Books status:");
     Serial.println(wifi.getPuzzleStatus("BKS"));
     delay(5000);
